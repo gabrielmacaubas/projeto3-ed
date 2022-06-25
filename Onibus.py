@@ -1,3 +1,5 @@
+from MatrizEsparsa import *
+
 class Passageiro:
     def __init__(self, nome:str, rg:str):
         self.__nome = nome
@@ -12,9 +14,18 @@ class Passageiro:
 
 
 class Onibus:
-    def __init__(self):
+    def __init__(self, id:str, linhas:int, colunas:int):
+        self.__onibus = MatrizEsparsa(linhas, colunas)
+        self.__id = id
+        self.__linhas = self.__onibus.linhas
+        self.__colunas = self.__onibus.colunas
     
+    def estaCheio(self):
+        return self.__onibus.estaCheio()
     
+    def numero_poltrona(self, linha, coluna):
+        return self.__onibus.indice_linear(linha, coluna, self.__linhas)
+
     def procurarAssentoDisponivel(self)->int:
         '''Retorna um assento vazio disponível, se houver.
            Se não houver assento disponível, lançar uma exceção'''
@@ -24,7 +35,7 @@ class Onibus:
         else:
             for l in self.__linhas:
                 for c in range(self.__colunas):
-                    return self.numero_poltrona(l, c, self.__linhas)
+                    return self.numero_poltrona(l, c)
                 
     def __str__(self):
         s = ''
@@ -42,11 +53,11 @@ class Onibus:
             s += f'{i}-'
 
             for c in range(self.__colunas):
-                if self.__matriz[l][c] is None:
+                if self.__onibus[l][c] is None:
                     s += '[   ] '
 
                 else:
-                    s += f'[{self.__matriz[l][c].nome[:3].capitalize()}] '
+                    s += f'[{self.__onibus[l][c].nome[:3].capitalize()}] '
 
             s+= '\n'
 
@@ -56,7 +67,7 @@ class Onibus:
             s += f'   {temp:^3}'
             temp += self.__linhas
 
-        s += f'\n{self.__id}, {self.tamanho()} assentos.'
+        s += f'\n{self.__id}, {self.onibus.tamanho()} assentos.'
 
         return s
 

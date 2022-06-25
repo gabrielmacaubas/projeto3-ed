@@ -3,19 +3,26 @@ class MatrizEsparsaException(Exception):
         super().__init__(msg)
 
 class MatrizEsparsa:
-    def __init__(self, id:str, linhas:int, colunas:int):
+    def __init__(self, linhas:int, colunas:int):
         '''A numeracao das poltronas é definida da seguinte forma:
                       Poltronas
            Fileira 1: 01 02    03 04
            Fileira 2: 05 06    07 08
            ....
         '''
-        self.__id = id
         self.__matriz = [ [ None for y in range( colunas ) ] 
              for x in range( linhas ) ]
         self.__unidades = int()
         self.__linhas = len(self.__matriz)
         self.__colunas = len(self.__matriz[0])
+    
+    @property
+    def linhas(self)->int:
+        return self.__linhas
+
+    @property
+    def colunas(self)->int:
+        return self.__colunas
 
     def tamanho(self)->int:
         '''Retorna a quantidade de células da matriz'''
