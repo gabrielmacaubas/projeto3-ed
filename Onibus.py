@@ -1,16 +1,10 @@
-from MatrizEsparsa import *
+from MatrizEsparsa import MatrizEsparsa
+from Passageiro import Passageiro
+from pathlib import Path
 
-class Passageiro:
-    def __init__(self, nome:str, rg:str):
-        self.__nome = nome
-        self.__rg = rg
-    
-    @property
-    def nome(self)->str:
-        return self.__nome
-
-    def __str__(self):
-        return f'{self.__nome} RG {self.__rg}'
+class OnibusException(Exception):
+    def __init__(self, msg:str):
+        super().__init__(msg)
 
 
 class Onibus:
@@ -20,23 +14,65 @@ class Onibus:
         self.__linhas = self.__onibus.linhas
         self.__colunas = self.__onibus.colunas
     
-    def estaCheio(self):
-        return self.__onibus.estaCheio()
+    def tamanho(self)->int:
+        return self.__onibus.tamanho()
+
+    def localizar(self, linha:int, coluna:int)->object:
+        return self.__onibus.matriz[linha][coluna]
     
-    def numero_poltrona(self, linha, coluna):
-        return self.__onibus.indice_linear(linha, coluna, self.__linhas)
+    def estaVazio(self)->bool:
+        return self.__onibus.estaVazia()
+
+    def estaCheio(self)->bool:
+        return self.__onibus.estaCheia()
+    
+    def numeroPoltrona(self, linha:int, coluna:int)->int:
+        return self.__onibus.indiceLinear(linha, coluna, self.__linhas)
 
     def procurarAssentoDisponivel(self)->int:
         '''Retorna um assento vazio disponível, se houver.
            Se não houver assento disponível, lançar uma exceção'''
         if self.estaCheio():
-            raise MatrizEsparsaException('Não há assento disponível.')
+            raise OnibusException('Não há assento disponível.')
         
         else:
-            for l in self.__linhas:
+            for l in range(self.__linhas):
                 for c in range(self.__colunas):
-                    return self.numero_poltrona(l, c)
-                
+                    return self.numeroPoltrona(l, c)
+    
+    def alocar(self, passageiro:object, poltrona=None)->bool:
+        if poltrona is None:
+            self.alocar(passageiro, self.procurarAssentoDisponivel())
+        else:
+            return self.__onibus.adicionar(passageiro, poltrona)
+
+    def trocarPoltrona(self, poltrona:int, nova_poltrona:int)->bool:
+        return self.__onibus.trocar(poltrona, nova_poltrona)
+    
+    def desalocarPoltrona(self, poltrona:int)->bool:
+        return self.__onibus.remover(poltrona)
+
+    def retornarPoltrona(self, nome_passageiro:str)->int:
+        if self.estaVazio():
+            raise OnibusException('Esta Matriz está vazia.')
+   
+        for l in range(self.__linhas):
+            for c in range(self.__colunas):
+                if self.localizar(l, c):
+                    if self.localizar(l, c).nome == nome_passageiro:
+                        return self.numeroPoltrona(l, c)
+
+        return False
+
+    def retornarPassageiro(self, poltrona:int)->object:
+        if self.__onibus.pesquisar(poltrona) is None:
+            raise OnibusException('Este assento está vazio.')
+
+        return self.__onibus.pesquisar(poltrona)
+
+    def exibirOnibus(self):
+        print(self.__str__())
+
     def __str__(self):
         s = ''
         i = 0
@@ -53,11 +89,11 @@ class Onibus:
             s += f'{i}-'
 
             for c in range(self.__colunas):
-                if self.__onibus[l][c] is None:
+                if self.localizar(l, c) is None:
                     s += '[   ] '
 
                 else:
-                    s += f'[{self.__onibus[l][c].nome[:3].capitalize()}] '
+                    s += f'[{self.localizar(l, c).nome[:3].capitalize()}] '
 
             s+= '\n'
 
@@ -67,14 +103,37 @@ class Onibus:
             s += f'   {temp:^3}'
             temp += self.__linhas
 
-        s += f'\n{self.__id}, {self.onibus.tamanho()} assentos.'
+        s += f'\n{self.__id}, {self.tamanho()-self.__onibus.unidades} assentos disponiveis.'
 
         return s
 
+
+if __name__ == "__main__":
+    path = str(Path(__file__).parent.resolve())+'/'
+    onibusNome = "JPA-CG"
+    contador = int()
+    jpbus = Onibus(onibusNome,4,12)
+    with open(str(path)+onibusNome+'.txt', 'a', encoding='utf-8') as f: 
+        contador += 1
+        f.write(f"Linha: {onibusNome}-{contador:0>3}\nPoltrona;passageiro;rg\n")
+    
+    onibusNome = "JPA-SP"
+    jpbus = Onibus(onibusNome,4,12)
+    with open(str(path)+onibusNome+'.txt', 'a', encoding='utf-8') as f: 
+        contador += 1
+        f.write(f"Linha: {onibusNome}-{contador:0>3}\nPoltrona;passageiro;rg\n")
+
+    jpbus.alocar(Passageiro("samuel", "123"), 8)
+    jpbus.alocar(Passageiro("madu", "456"), 9)
+    jpbus.exibirOnibus()
+    jpbus.trocarPoltrona(9, 10)
+    jpbus.exibirOnibus()
+    jpbus.desalocarPoltrona(8)
+    jpbus.exibirOnibus()
+    print(jpbus.retornarPoltrona("madu"))
+    print(jpbus.retornarPassageiro(10))
+    
 """
-me = MatrizEsparsa('JPA-CG',4,3)
-print(me)
-me.adicionar(Passageiro("samuel", "123"), 6)
 me.adicionar(Passageiro("madu", "456"), 7)
 me.adicionar(Passageiro("gabriel", "789"), 8)
 print()

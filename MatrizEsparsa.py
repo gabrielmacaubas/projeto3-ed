@@ -1,5 +1,5 @@
 class MatrizEsparsaException(Exception):
-    def __init__(self, msg):
+    def __init__(self, msg:str):
         super().__init__(msg)
 
 class MatrizEsparsa:
@@ -23,6 +23,14 @@ class MatrizEsparsa:
     @property
     def colunas(self)->int:
         return self.__colunas
+    
+    @property
+    def matriz(self)->object:
+        return self.__matriz
+
+    @property
+    def unidades(self)->int:
+        return self.__unidades
 
     def tamanho(self)->int:
         '''Retorna a quantidade de células da matriz'''
@@ -31,7 +39,7 @@ class MatrizEsparsa:
     def estaVazia(self)->bool:
         return self.__unidades == 0
 
-    def estaCheio(self)->bool:
+    def estaCheia(self)->bool:
         return self.__unidades == self.tamanho()
 
     def pesquisar(self, posicao:int)->object:
@@ -51,7 +59,7 @@ class MatrizEsparsa:
             for c in range(self.__colunas):
                 if self.__matriz[l][c]:
                     if self.__matriz[l][c] == chave:
-                        return self.indice_linear(l, c, self.__linhas)
+                        return self.indiceLinear(l, c, self.__linhas)
 
         return False
 
@@ -82,7 +90,7 @@ class MatrizEsparsa:
         self.__unidades += 1
 
         return True
-    
+
     def remover(self, posicao:int)->object:
         (l, c) = self.indices(posicao, self.__linhas)
         temp = self.__matriz[l][c]
@@ -94,6 +102,7 @@ class MatrizEsparsa:
         self.__unidades -= 1
 
         return temp
+    
 
     def esvaziar(self):
         '''Esvazia a matriz esparsa'''
@@ -122,7 +131,7 @@ class MatrizEsparsa:
         return s
     
     @classmethod
-    def indice_linear(cls, linha:int, coluna:int, linhas:int)->int:
+    def indiceLinear(cls, linha:int, coluna:int, linhas:int)->int:
         return (coluna * linhas + linha) + 1
     
     @classmethod
