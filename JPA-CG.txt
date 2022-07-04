@@ -1,2 +1,0 @@
-Linha: JPA-CG-001
-Poltrona;passageiro;rg

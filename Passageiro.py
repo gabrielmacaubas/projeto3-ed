@@ -6,6 +6,10 @@ class Passageiro:
     @property
     def nome(self)->str:
         return self.__nome
+    
+    @property
+    def rg(self)->str:
+        return self.__rg
 
     def __str__(self):
         return f'{self.__nome} RG {self.__rg}'

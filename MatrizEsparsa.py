@@ -3,6 +3,7 @@ class MatrizEsparsaException(Exception):
         super().__init__(msg)
 
 class MatrizEsparsa:
+    # construtor
     def __init__(self, linhas:int, colunas:int):
         '''A numeracao das poltronas é definida da seguinte forma:
                       Poltronas
@@ -36,22 +37,24 @@ class MatrizEsparsa:
         '''Retorna a quantidade de células da matriz'''
         return self.__linhas * self.__colunas
 
+    # retorna True ou False caso a matriz esteja vazia
     def estaVazia(self)->bool:
         return self.__unidades == 0
 
+    # retorna True ou False caso a matriz esteja cheia
     def estaCheia(self)->bool:
         return self.__unidades == self.tamanho()
 
     def pesquisar(self, posicao:int)->object:
-        '''Retorna os dados do passageiro alocado em um
-           determinado assento'''
+        '''Retorna os dados de uma célula em
+           uma determinada posição'''
         (l, c) = self.indices(posicao, self.__linhas)
 
         return self.__matriz[l][c]
 
     def pesquisarPosicao(self, chave:str )->int:
-        '''Retorna o número da poltrona em que um determinado
-           passageiro está ocupando'''
+        '''Retorna o número da célula em que uma
+           determinada chave está'''
         if self.estaVazia():
             raise MatrizEsparsaException('Esta Matriz está vazia.')
    
@@ -63,6 +66,7 @@ class MatrizEsparsa:
 
         return False
 
+    # troca o objeto de uma célula para outra caso esteja vazia
     def trocar(self, posicao_atual:int, posicao_nova:int)->bool:
         (l, c) = self.indices(posicao_atual, self.__linhas)
         (nl, nc) = self.indices(posicao_nova, self.__linhas)
@@ -91,6 +95,7 @@ class MatrizEsparsa:
 
         return True
 
+    # remove o objeto de uma célula
     def remover(self, posicao:int)->object:
         (l, c) = self.indices(posicao, self.__linhas)
         temp = self.__matriz[l][c]
@@ -103,14 +108,16 @@ class MatrizEsparsa:
 
         return temp
     
-
-    def esvaziar(self):
+    # esvazia a matriz
+    def esvaziar(self)->bool:
         '''Esvazia a matriz esparsa'''
         self.__matriz = [ [ None for y in range( self.__colunas ) ] 
              for x in range( self.__linhas ) ]
 
         self.__unidades = 0
+        return True
 
+    # exibe a matriz completa
     def exibirMatriz(self):
         '''Mostra o status de ocupacao de todos os assentos'''
         print(self.__str__())
@@ -130,6 +137,12 @@ class MatrizEsparsa:
             
         return s
     
+    """
+    PARTE CHAVE DO PROJETO:
+    dois métodos de classe que calculam o indice linear
+    e os indices normais de uma célula da matriz, dado a
+    linha e a coluna da mesma ou o indice linear, respectivamente
+    """
     @classmethod
     def indiceLinear(cls, linha:int, coluna:int, linhas:int)->int:
         return (coluna * linhas + linha) + 1
@@ -140,9 +153,3 @@ class MatrizEsparsa:
         c = (poltrona-1) // linhas
 
         return l, c
-
-if __name__ == '__main__':
-    a = MatrizEsparsa("a", 4, 12)
-    a.adicionar(1234, 4)
-    a.adicionar(5678, 5)
-    a.exibirMatriz()

@@ -1,0 +1,6 @@
+Linha: JPA-SP-002
+Poltrona;passageiro;rg
+1;Alex Sandro;123
+8;Madu;456
+16;Macaúbas;789
+30;Sam;101112
