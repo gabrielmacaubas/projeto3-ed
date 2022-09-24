@@ -14,7 +14,7 @@ class Onibus:
         self.__linhas = self.__onibus.linhas
         self.__colunas = self.__onibus.colunas
     
-    # número de passageiros
+    # número de passageiros alocados no ônibus
     def passageiros(self)->int:
         return self.__onibus.unidades
 
