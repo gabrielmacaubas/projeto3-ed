@@ -51,7 +51,7 @@ class Onibus:
                     if self.localizar(l, c) is None:
                         return self.numeroPoltrona(l, c)
     
-    # aloca passsageiro
+    # aloca passsageiro no ônibus
     def alocar(self, passageiro:object, poltrona=None)->bool:
         '''Retorna True se a inserção foi feita com sucesso, ou 
            False caso contrário'''
