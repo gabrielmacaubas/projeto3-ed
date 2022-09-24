@@ -5,7 +5,6 @@ class OnibusException(Exception):
     def __init__(self, msg:str):
         super().__init__(msg)
 
-
 class Onibus:
     # construtor
     def __init__(self, id:str, linhas:int, colunas:int):
